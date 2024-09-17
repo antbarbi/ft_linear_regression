@@ -12,11 +12,9 @@ def main():
     X_train = data['km'].values.reshape(-1, 1)
     y_train = data['price'].values
 
-    # Standardize the features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
 
-    # Set hyperparameters
     learning_rate = 0.1
     tetha0 = 0
     tetha1 = 0
@@ -33,7 +31,6 @@ def main():
     line, = ax.plot([], [], color='red', label='Regression Line')  # Initial empty line for the regression line
     ax.legend()
 
-    # Initialize variables for tracking epochs and loss
     epoch = 0
     losses = []
 
@@ -59,21 +56,17 @@ def main():
         fig.canvas.draw()
         fig.canvas.flush_events()
 
-        # Track the loss (Mean Squared Error)
         loss = np.mean((predictions - y_train) ** 2)
         losses.append(loss)
 
-        # Print and plot loss at intervals
         if epoch % 10 == 0:
             print(f"Epoch {epoch}, Loss: {loss}")
 
-        # Check for convergence
         if prev_tetha0 == tetha0 and prev_tetha1 == tetha1:
             break
 
         epoch += 1
 
-    # Print final standardized and de-standardized parameters
     print(f"Final Std t0: {tetha0}, t1: {tetha1}")
 
     mean_km = scaler.mean_[0]
@@ -84,7 +77,6 @@ def main():
 
     print(f"De-standardized t0: {tetha0_destandardized}, t1: {tetha1_destandardized}")
 
-    # Save the final weights
     weights = {
         "tetha0": tetha0_destandardized,
         "tetha1": tetha1_destandardized
