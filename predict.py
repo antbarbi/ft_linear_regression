@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from ft_pypackage import ft_error
 from matplotlib import pyplot as plt
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 
 # Common eval metrics for regression models
@@ -43,12 +42,17 @@ def evaluation_metrics(tetha0: float, tetha1: float, data: pd.DataFrame) -> None
     y_true = data["price"].values
     y_pred = tetha0 + tetha1 * data["km"].values
     
-    mae = mean_absolute_error(y_true, y_pred)
-    mse = mean_squared_error(y_true, y_pred)
+    # Measure of how far pred is from truth, lower is better
+    mae = np.mean(np.abs(y_true - y_pred))
+    # Measure of how far pred is from truth but penalizes larger errors, lower is better
+    mse = np.mean((y_true - y_pred) ** 2)
+    # same unit as targer, average deviation from the actual price, lower is better
     rmse = np.sqrt(mse)
-    r2 = r2_score(y_true, y_pred)
+    # between 0 and 1, 0 = doesnt predict at all, 1 = perfect predictions
+    r2 = 1 - (np.sum((y_true - y_pred) ** 2) / np.sum((y_true - np.mean(y_true)) ** 2))
     n = len(y_true)
     p = 1  # Number of predictors
+    # Sane as r2 but penalizes irrelevant predictors/features
     adjusted_r2 = 1 - (1 - r2) * (n - 1) / (n - p - 1)
     
     print(f"{'Mean Absolute Error (MAE):':<35} {mae:.4f}")
